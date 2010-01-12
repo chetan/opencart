@@ -1,5 +1,5 @@
 <?php
-class ControllerShippingUps extends Controller {
+class ControllerShippingUPS extends Controller {
 	private $error = array(); 
 	
 	public function index() {   
@@ -45,17 +45,28 @@ class ControllerShippingUps extends Controller {
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_sort_order'] = $this->language->get('entry_sort_order');
 		
-		$this->data['help_packaging'] = $this->language->get('help_packaging');
-		$this->data['help_type'] = $this->language->get('help_type');
-		
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 
-		$this->data['error_warning'] = @$this->error['warning'];
-		$this->data['error_postcode'] = @$this->error['postcode'];
-		$this->data['error_packaging'] = @$this->error['packaging'];
+		if (isset($this->error['warning'])) {
+			$this->data['error_warning'] = $this->error['warning'];
+		} else {
+			$this->data['error_warning'] = '';
+		}
+
+		if (isset($this->error['postcode'])) {
+			$this->data['error_postcode'] = $this->error['postcode'];
+		} else {
+			$this->data['error_postcode'] = '';
+		}
+		
+		if (isset($this->error['packaging'])) {
+			$this->data['error_packaging'] = $this->error['packaging'];
+		} else {
+			$this->data['error_packaging'] = '';
+		}
 
   		$this->document->breadcrumbs = array();
 
@@ -242,11 +253,13 @@ class ControllerShippingUps extends Controller {
 			$this->data['ups_sort_order'] = $this->config->get('ups_sort_order');
 		}				
 								
-		$this->id       = 'content';
 		$this->template = 'shipping/ups.tpl';
-		$this->layout   = 'common/layout';
+		$this->children = array(
+			'common/header',	
+			'common/footer'	
+		);
 		
- 		$this->render();
+ 		$this->response->setOutput($this->render(TRUE), $this->config->get('config_compression'));
 	}
 	
 	private function validate() {
@@ -254,11 +267,11 @@ class ControllerShippingUps extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if (!@$this->request->post['ups_postcode']) {
+		if (!isset($this->request->post['ups_postcode']) || !$this->request->post['ups_postcode']) {
 			$this->error['postcode'] = $this->language->get('error_postcode');
 		}
 		
-		if (!@$this->request->post['ups_packaging']) {
+		if (!isset($this->request->post['ups_packaging']) || !$this->request->post['ups_packaging']) {
 			$this->error['packaging'] = $this->language->get('error_packaging');
 		}
 		
