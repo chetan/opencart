@@ -1,0 +1,4 @@
+image/cache/*
+cache/*
+system/cache/*
+system/logs/error.txt
