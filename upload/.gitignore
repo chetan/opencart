@@ -2,3 +2,5 @@ image/cache/*
 cache/*
 system/cache/*
 system/logs/error.txt
+config.php
+admin/config.php
