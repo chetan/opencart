@@ -1,18 +1,28 @@
 <?php
+
+require_once DIR_SYSTEM . "/external/ups/UpsAPI.php";
+require_once DIR_SYSTEM . "/external/ups/UpsAPI/Client.php";
+require_once DIR_SYSTEM . "/external/ups/UpsAPI/RatesAndService.php";
+require_once DIR_SYSTEM . "/external/ups/UpsAPI/Tracking.php";
+
 class ModelShippingUps extends Model {
 	function getQuote($country_id, $zone_id, $postcode = '') {
 		$this->load->language('shipping/ups');
 		
 		if ($this->config->get('ups_status')) {
-      		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('ups_geo_zone_id') . "' AND country_id = '" . (int)$country_id . "' AND (zone_id = '" . (int)$zone_id . "' OR zone_id = '0')");
+			
+      		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone " . 
+									  "WHERE geo_zone_id = '" . (int)$this->config->get('ups_geo_zone_id') . "'" .
+									  "AND country_id = '" . (int)$country_id . "'" .
+									  "AND (zone_id = '" . (int)$zone_id . "'" .
+									 	   "OR zone_id = '0')");
 		
-      		if (!$this->config->get('ups_geo_zone_id')) {
-        		$status = TRUE;
-      		} elseif ($query->num_rows) {
+      		if (!$this->config->get('ups_geo_zone_id') || $query->num_rows) {
         		$status = TRUE;
       		} else {
         		$status = FALSE;
       		}
+
 		} else { 
 			$status = FALSE;
 		}
